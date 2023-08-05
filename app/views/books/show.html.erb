@@ -35,6 +35,10 @@
           </tr>
         </tbody>
       </table>
+      <!--コメント一覧表示-->
+      <%= render 'book_comments/index', book: @book %>
+      <!--コメントの投稿機能-->
+      <%= render 'book_comments/form', book: @book, book_comment: @book_comment %>
     </div>
   </div>
 </div>

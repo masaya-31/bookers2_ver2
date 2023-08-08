@@ -27,8 +27,8 @@
             <td class=<%= "favorite-" + @book.id.to_s %> >
               <%= render 'favorites/favorite', book: @book %>
             </td>
-            <td>
-              コメント数：<%= @book.book_comments.count %>
+            <td class="book-comments-counter">
+              <%= render 'book_comments/counter', book: @book %>
             </td>
             <% if @book.user == current_user %>
               <td>
@@ -42,7 +42,9 @@
         </tbody>
       </table>
       <!--コメント一覧表示-->
-      <%= render 'book_comments/index', book: @book %>
+      <div class="book-comments-index">
+        <%= render 'book_comments/index', book: @book %>
+      </div>
       <!--コメントの投稿機能-->
       <%= render 'book_comments/form', book: @book, book_comment: @book_comment %>
     </div>

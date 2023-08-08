@@ -24,7 +24,7 @@
             <td>
               <%= @book.body %>
             </td>
-            <td>
+            <td class=<%= "favorite-" + @book.id.to_s %> >
               <%= render 'favorites/favorite', book: @book %>
             </td>
             <td>

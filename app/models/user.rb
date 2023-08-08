@@ -5,6 +5,11 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   has_many :books, dependent: :destroy
+  has_one_attached :profile_image
+  
+  validates :name, uniqueness: true, length: { in: 2..20 }
+  validates :introduction, length: { maximum: 50 }
+  
   has_many :favorites, dependent: :destroy
   has_many :book_comments, dependent: :destroy
   # 自分がフォローする側の関係
@@ -16,9 +21,6 @@ class User < ApplicationRecord
   # 被フォロー関係を通じて参照→自分をフォローしている人
   has_many :followers, through: :reverse_of_relationships, source: :follower
 
-  has_one_attached :profile_image
-  validates :name, uniqueness: true, length: { in: 2..20 }
-  validates :introduction, length: { maximum: 50 }
 
   def get_profile_image(width, height)
     unless profile_image.attached?
@@ -42,5 +44,16 @@ class User < ApplicationRecord
   def following?(user)
     following.include?(user)
   end
-
+  
+  def self.search_for(content, method)
+    if method == 'perfect'
+      User.where(name: content)
+    elsif method == 'forward'
+      User.where('name LIKE ?', content + '%')
+    elsif method == 'backward'
+      User.where('name LIKE ?', '%' + content)
+    else
+      User.where('name LIKE ?', '%' + content + '%')
+    end
+  end
 end

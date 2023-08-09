@@ -6,10 +6,10 @@ class User < ApplicationRecord
 
   has_many :books, dependent: :destroy
   has_one_attached :profile_image
-  
+
   validates :name, uniqueness: true, length: { in: 2..20 }
   validates :introduction, length: { maximum: 50 }
-  
+
   has_many :favorites, dependent: :destroy
   has_many :book_comments, dependent: :destroy
   # 自分がフォローする側の関係
@@ -21,6 +21,18 @@ class User < ApplicationRecord
   # 被フォロー関係を通じて参照→自分をフォローしている人
   has_many :followers, through: :reverse_of_relationships, source: :follower
 
+  GUEST_USER_EMAIL = "guest@example.com"
+
+  def self.guest
+    find_or_create_by!(email: GUEST_USER_EMAIL) do |user|
+      user.password = SecureRandom.urlsafe_base64
+      user.name = "guestuser"
+    end
+  end
+
+  def guest_user?
+    email == GUEST_USER_EMAIL
+  end
 
   def get_profile_image(width, height)
     unless profile_image.attached?
@@ -44,7 +56,7 @@ class User < ApplicationRecord
   def following?(user)
     following.include?(user)
   end
-  
+
   def self.search_for(content, method)
     if method == 'perfect'
       User.where(name: content)
